@@ -3,8 +3,11 @@
 
 #include <string>
 #include <stdint.h>
+#include <iostream>
 #include <memory>
 #include <list>
+#include <sstream>
+#include <fstream>
 
 namespace newboy {
 
@@ -53,8 +56,16 @@ class LogAppender {
 
         virtual ~LogAppender();
         virtual void log(LogLevel::Level level, LogEvent::ptr event) = 0;
-    private:
+
+        void setFormatter(LogFormatter::ptr formatter) {
+            m_formatter = formatter;
+        }
+        LogFormatter::ptr getFormatter() {
+            return m_formatter;
+        }
+    protected:
         LogLevel::Level m_level;
+        LogFormatter::ptr m_formatter;
 };
 
 // 日志器
@@ -88,12 +99,25 @@ class Logger {
 
 // stdout appender
 class StdoutLogAppender : public LogAppender {
+    public:
+        typedef std::shared_ptr<StdoutLogAppender> ptr;
 
+        void log(LogLevel::Level level, LogEvent::ptr event) override;
 };
 
 // file appender
 class FileLogAppender : public LogAppender {
+    public:
+        typedef std::shared_ptr<FileLogAppender> ptr;
+        
+        FileLogAppender(const std::string& filename);
+        void log(LogLevel::Level level, LogEvent::ptr event) override;
 
+        // 重新打开文件； if success return true
+        bool reopen();
+    private:
+        std::string m_filename;
+        std::ofstream m_filestream;
 };
 
 };
