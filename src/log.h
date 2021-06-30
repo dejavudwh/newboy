@@ -4,6 +4,7 @@
 #include <string>
 #include <stdint.h>
 #include <memory>
+#include <list>
 
 namespace newboy {
 
@@ -51,7 +52,7 @@ class LogAppender {
         typedef std::shared_ptr<LogAppender> ptr;
 
         virtual ~LogAppender();
-        void Log(LogLevel::Level level, LogEvent::ptr event);
+        virtual void log(LogLevel::Level level, LogEvent::ptr event) = 0;
     private:
         LogLevel::Level m_level;
 };
@@ -62,11 +63,27 @@ class Logger {
         typedef std::shared_ptr<Logger> ptr;
 
         Logger(const std::string& name = "root");
+        void log(LogLevel::Level level, LogEvent::ptr event);
 
+        void debug(LogEvent::ptr event);
+        void info(LogEvent::ptr event);
+        void warn(LogEvent::ptr event);
+        void error(LogEvent::ptr event);
+        void fatal(LogEvent::ptr event);
+
+        void addAppender(LogAppender::ptr appender);
+        void delAppender(LogAppender::ptr appender);
+
+        LogLevel::Level getLevel() const {
+            return m_level;
+        };
+        void setLevel(LogLevel::Level level) {
+            m_level = level;
+        };
     private:
-        std::string m_name;
-        LogLevel::Level m_level;
-        LogAppender::ptr m_appender;
+        std::string m_name;                       // 日志名称
+        LogLevel::Level m_level;                  // 日志级别（只会输出相应级别的日志）
+        std::list<LogAppender::ptr> m_appenders;  // 
 };
 
 // stdout appender
