@@ -9,14 +9,15 @@ Logger::Logger(const std::string& name = "root")
     :m_name(name) {}
 void Logger::log(LogLevel::Level level, LogEvent::ptr event) {
     if (level >= m_level) {
+        auto self = shared_from_this();
         for (auto& appender : m_appenders) {
-            appender->log(this, level, event);
+            appender->log(self, level, event);
         }
     }
 }
 
 void Logger::debug(LogEvent::ptr event) {
-    // debug(LogLevel::DEBUG, event);
+    // log(LogLevel::DEBUG, event);
 }
 void Logger::info(LogEvent::ptr event) {
 
@@ -77,7 +78,7 @@ void StdoutLogAppender::log(std::shared_ptr<Logger> logger, LogLevel::Level leve
  * LogLevel
  **/
 
-const char* LogLevel::ToString(LogLevel::Level level) {
+const char* LogLevel::toString(LogLevel::Level level) {
     switch (level) {
         #define XX(name) \
             case LogLevel::name: \
