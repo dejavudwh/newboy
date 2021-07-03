@@ -9,6 +9,8 @@
 #include <sstream>
 #include <fstream>
 #include <vector>
+#include <map>
+#include <functional>
 
 namespace newboy {
 
