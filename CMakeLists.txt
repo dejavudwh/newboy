@@ -8,12 +8,12 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR/lib})
 
 set(LIB_SRC
-    src/log.cpp
+    src/log.cc
     )
 
 add_library(newboy SHARED ${LIB_SRC})
 
-add_executable(test_log tests/test_log.cpp)
+add_executable(test_log tests/test_log.cc)
 add_dependencies(test_log newboy)
 target_link_libraries(test_log
     newboy)
