@@ -1,0 +1,1 @@
+2021-07-05 01:26:21	DEBUG	root	/home/ubuntu/workspaces/newboy/tests/test_log.cc	22
