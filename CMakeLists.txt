@@ -8,7 +8,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR/lib})
 
 set(LIB_SRC
-    src/log.cc
+    newboy/log.cc
     )
 
 add_library(newboy SHARED ${LIB_SRC})
