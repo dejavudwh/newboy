@@ -17,6 +17,21 @@ namespace newboy {
 
 class Logger;
 
+// 日志事件级别
+class LogLevel {
+    public:
+        enum Level {
+            UNKNOW = 0,
+            DEBUG,
+            INFO,
+            WARN,
+            ERROR,
+            FATAL,
+        };
+
+    static const char* toString(LogLevel::Level level);
+};
+
 // 日志事件
 class LogEvent {
     public:
@@ -45,28 +60,13 @@ class LogEvent {
         const char* m_file = nullptr;   // 文件名
         int32_t m_line = 0;             // 行号
         uint32_t m_elapse = 0;          // 程序启动到现在的毫秒数
-        std::string m_threadName;
         uint32_t m_threadId = 0;        // 线程id
         uint32_t m_fiberId = 0;         // 协程id
         uint64_t m_time = 0;            // 时间戳
+        std::string m_threadName;
         std::stringstream m_ss;         // 日志流
         std::shared_ptr<Logger> m_logger;
         LogLevel::Level m_level;
-};
-
-// 日志事件级别
-class LogLevel {
-    public:
-        enum Level {
-            UNKOWN = 0,
-            DEBUG,
-            INFO,
-            WARN,
-            ERROR,
-            FATAL,
-        };
-
-    static const char* toString(LogLevel::Level level);
 };
 
 // 日志格式化器
@@ -87,7 +87,7 @@ class LogFormatter {
             public:
                 typedef std::shared_ptr<FormatItem> ptr;
 
-                virtual ~FormatItem();
+                virtual ~FormatItem() {}
                 virtual void format(std::ostream& os, std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) = 0;
         };
     
@@ -103,7 +103,7 @@ class LogAppender {
     public:
         typedef std::shared_ptr<LogAppender> ptr;
 
-        virtual ~LogAppender();
+        virtual ~LogAppender() {}
         virtual void log(std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) = 0;
 
         void setFormatter(LogFormatter::ptr formatter) {

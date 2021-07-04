@@ -1,2 +1,0 @@
-/home/ubuntu/workspaces/newboy/CMakeFiles/test_log.dir
-/home/ubuntu/workspaces/newboy/CMakeFiles/newboy.dir

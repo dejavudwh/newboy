@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "newboy/log.h"
+#include "../newboy/log.h"
 
 int main(int argc, char const *argv[]) {
     std::cout << "Hello Newboy Logger!" << std::endl;
