@@ -142,7 +142,7 @@ class Logger : public std::enable_shared_from_this<Logger>{
         LogLevel::Level getLevel() const { return m_level; }
         void setLevel(LogLevel::Level level) { m_level = level; }
 
-        const std::string& getname() const { return m_name; }
+        const std::string& getName() const { return m_name; }
         void setFormatter(LogFormatter::ptr val);
         void setFormatter(const std::string& val);
         LogFormatter::ptr getFormatter();

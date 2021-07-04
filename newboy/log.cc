@@ -75,8 +75,8 @@ void Logger::addAppender(LogAppender::ptr appender) {
 
 void Logger::delAppender(LogAppender::ptr appender) {
     for (auto it = m_appenders.begin();
-                it != m_appenders.end();
-                ++it) {
+              it != m_appenders.end();
+              ++it) {
         if (*it == appender) {
             m_appenders.erase(it);
         }
@@ -133,7 +133,7 @@ void FileLogAppender::log(std::shared_ptr<Logger> logger, LogLevel::Level level,
             reopen();
             m_lastTime = now;
         }
-        //if(!(m_filestream << m_formatter->format(logger, level, event))) {
+
         if(!m_formatter->format(m_filestream, logger, level, event)) {
             std::cout << "error" << std::endl;
         }
@@ -200,6 +200,13 @@ std::string LogFormatter::format(std::shared_ptr<Logger> logger, LogLevel::Level
     return ss.str();
 }
 
+std::ostream& LogFormatter::format(std::ostream& ofs, std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) {
+    for(auto& i : m_items) {
+        i->format(ofs, logger, level, event);
+    }
+    return ofs;
+}
+
 class MessageFormatItem : public LogFormatter::FormatItem {
     public:
         MessageFormatItem(const std::string& str = "") {}
@@ -228,7 +235,7 @@ class NameFormatItem : public LogFormatter::FormatItem {
     public:
         NameFormatItem(const std::string& str = "") {}
         void format(std::ostream& os, Logger::ptr logger, LogLevel::Level level, LogEvent::ptr event) override {
-            // os << event->getLogger()->getName();
+            os << event->getLogger()->getName();
         }
 };
 
@@ -252,7 +259,7 @@ class ThreadNameFormatItem : public LogFormatter::FormatItem {
     public:
         ThreadNameFormatItem(const std::string& str = "") {}
         void format(std::ostream& os, Logger::ptr logger, LogLevel::Level level, LogEvent::ptr event) override {
-            // os << event->getThreadName();
+            os << event->getThreadName();
         }
 };
 
