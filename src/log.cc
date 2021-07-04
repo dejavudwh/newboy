@@ -6,12 +6,18 @@ namespace newboy {
  * Logger
  **/
 Logger::Logger(const std::string& name)
-    :m_name(name) {}
+    :m_name(name),
+     m_level(LogLevel::DEBUG) {
+    m_formatter.reset(new LogFormatter("%d{%Y-%m-%d %H:%M:%S}%T%t%T%N%T%F%T[%p]%T[%c]%T%f:%l%T%m%n"));
+}
+
 void Logger::log(LogLevel::Level level, LogEvent::ptr event) {
-    if (level >= m_level) {
+    if(level >= m_level) {
         auto self = shared_from_this();
-        for (auto& appender : m_appenders) {
-            appender->log(self, level, event);
+        if(!m_appenders.empty()) {
+            for(auto& i : m_appenders) {
+                i->log(self, level, event);
+            }
         }
     }
 }
@@ -36,9 +42,37 @@ void Logger::fatal(LogEvent::ptr event) {
     log(LogLevel::FATAL, event);
 }
 
+void Logger::setFormatter(LogFormatter::ptr val) {
+    m_formatter = val;
+
+    for(auto& i : m_appenders) {
+        if(!i->m_hasFormatter) {
+            i->m_formatter = m_formatter;
+        }
+    }
+}
+
+void Logger::setFormatter(const std::string& val) {
+    std::cout << "---" << val << std::endl;
+    LogFormatter::ptr new_val(new LogFormatter(val));
+    if(new_val->isError()) {
+        std::cout << "Logger setFormatter name=" << m_name
+                  << " value=" << val << " invalid formatter"
+                  << std::endl;
+        return;
+    }
+
+    setFormatter(new_val);
+}
+
+LogFormatter::ptr Logger::getFormatter() {
+    return m_formatter;
+}
+
 void Logger::addAppender(LogAppender::ptr appender) {
     m_appenders.push_back(appender);
 }
+
 void Logger::delAppender(LogAppender::ptr appender) {
     for (auto it = m_appenders.begin();
                 it != m_appenders.end();
@@ -50,15 +84,59 @@ void Logger::delAppender(LogAppender::ptr appender) {
 }
 
 /**
+ * LogEvent
+ **/
+
+LogEvent::LogEvent(std::shared_ptr<Logger> logger, LogLevel::Level level,
+                   const char* file, int32_t line, uint32_t elapse,
+                   uint32_t thread_id, uint32_t fiber_id,
+                   uint64_t time ,const std::string& thread_name)
+    :m_file(file),
+     m_line(line),
+     m_elapse(elapse),
+     m_threadId(thread_id),
+     m_fiberId(fiber_id),
+     m_time(time),
+     m_threadName(thread_name),
+     m_logger(logger),
+     m_level(level) {}
+
+void LogEvent::format(const char* fmt, ...) {
+    va_list al;
+    va_start(al, fmt);
+    format(fmt, al);
+    va_end(al);
+}
+
+void LogEvent::format(const char* fmt, va_list al) {
+    char* buf = nullptr;
+    int len = vasprintf(&buf, fmt, al);
+    if(len != -1) {
+        m_ss << std::string(buf, len);
+        free(buf);
+    }
+}
+
+/**
  * Appender
  **/
 
 FileLogAppender::FileLogAppender(const std::string& filename)
-    :m_filename(filename) {}
+    :m_filename(filename) {
+    reopen();
+}
 
 void FileLogAppender::log(std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) {
-    if (level >= m_level) {
-        m_filestream << m_formatter->format(logger, level, event);
+    if(level >= m_level) {
+        uint64_t now = event->getTime();
+        if(now >= (m_lastTime + 3)) {
+            reopen();
+            m_lastTime = now;
+        }
+        //if(!(m_filestream << m_formatter->format(logger, level, event))) {
+        if(!m_formatter->format(m_filestream, logger, level, event)) {
+            std::cout << "error" << std::endl;
+        }
     }
 }
 
