@@ -33,6 +33,10 @@ int main(int argc, char const *argv[]) {
 
     std::cout << "\nHello Newboy Logger for LoggerMgr!" << std::endl;
     auto l = newboy::LoggerMgr::GetInstance()->getLogger("xx");
+    newboy::StdoutLogAppender::ptr lm_std_appender(new newboy::StdoutLogAppender);
+    // TODO: logger自己的format没传下去
+    lm_std_appender->setFormatter(fmt);
+    l->addAppender(lm_std_appender);
     NEWBOY_LOG_INFO(l) << "xxx";
 
     return 0;

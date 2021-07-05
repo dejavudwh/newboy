@@ -1,1 +1,2 @@
-2021-07-05 01:26:21	DEBUG	root	/home/ubuntu/workspaces/newboy/tests/test_log.cc	22
+2021-07-05 18:03:12	ERROR	root	/home/ubuntu/workspaces/newboy/tests/test_log.cc	30
+2021-07-05 18:05:37	ERROR	root	/home/ubuntu/workspaces/newboy/tests/test_log.cc	30
