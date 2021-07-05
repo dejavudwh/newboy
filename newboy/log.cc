@@ -118,6 +118,18 @@ void LogEvent::format(const char* fmt, va_list al) {
 }
 
 /**
+ * LogEvenet Wrap
+ **/
+
+LogEventWrap::LogEventWrap(LogEvent::ptr e)
+    :m_event(e) {
+}
+
+LogEventWrap::~LogEventWrap() {
+    m_event->getLogger()->log(m_event->getLevel(), m_event);
+}
+
+/**
  * Appender
  **/
 

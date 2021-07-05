@@ -69,6 +69,19 @@ class LogEvent {
         LogLevel::Level m_level;
 };
 
+// 日志事件包装器
+class LogEventWrap {
+    public:
+        LogEventWrap(LogEvent::ptr e);
+        ~LogEventWrap();
+
+        LogEvent::ptr getEvent() const { return m_event; }
+        std::stringstream& getSS();
+
+    private:
+        LogEvent::ptr m_event;
+};
+
 // 日志格式化器
 class LogFormatter {
     public:
