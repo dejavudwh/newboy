@@ -31,5 +31,9 @@ int main(int argc, char const *argv[]) {
 
     NEWBOY_LOG_FMT_ERROR(logger, "test macro fmt error %s", "aa");
 
+    std::cout << "\nHello Newboy Logger for LoggerMgr!" << std::endl;
+    auto l = newboy::LoggerMgr::GetInstance()->getLogger("xx");
+    NEWBOY_LOG_INFO(l) << "xxx";
+
     return 0;
 }

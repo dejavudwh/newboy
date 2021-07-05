@@ -13,6 +13,8 @@
 #include <functional>
 #include <cstdarg>
 #include "util.h"
+#include "singleton.h"
+
 
 #define NEWBOY_LOG_LEVEL(logger, level) \
     if(logger->getLevel() <= level) \
@@ -193,12 +195,14 @@ class Logger : public std::enable_shared_from_this<Logger>{
         void setFormatter(LogFormatter::ptr val);
         void setFormatter(const std::string& val);
         LogFormatter::ptr getFormatter();
-        
-    protected:
+        Logger::ptr getRoot() { return m_root; }
+        void setRoot(Logger::ptr root) { m_root = root; }
+    private:
         std::string m_name;                       // 日志名称
         LogLevel::Level m_level;                  // 日志级别（只会输出相应级别的日志）
         std::list<LogAppender::ptr> m_appenders;  // 
         LogFormatter::ptr m_formatter;
+        Logger::ptr m_root;
 };
 
 // stdout appender
@@ -224,6 +228,24 @@ class FileLogAppender : public LogAppender {
         std::ofstream m_filestream;
         uint64_t m_lastTime = 0;
 };
+
+// 日志器管理类
+class LoggerManager {
+    public: 
+        LoggerManager();
+
+        Logger::ptr getLogger(const std::string& name);
+        void init();
+        Logger::ptr getRoot() const { return m_root; }
+    private:
+        /// 日志器容器
+        std::map<std::string, Logger::ptr> m_loggers;
+        /// 主日志器
+        Logger::ptr m_root;
+};
+
+/// 日志器管理类单例模式
+typedef newboy::Singleton<LoggerManager> LoggerMgr;
 
 };
 
