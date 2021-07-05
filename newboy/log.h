@@ -13,6 +13,39 @@
 #include <functional>
 #include <cstdarg>
 
+#define SYLAR_LOG_LEVEL(logger, level) \
+    if(logger->getLevel() <= level) \
+        newboy::LogEventWrap(newboy::LogEvent::ptr(new sylar::LogEvent(  \
+            logger, level, __FILE__, __LINE__, 0, newboy::GetThreadId(), \
+            newboy::GetFiberId(), time(0), newboy::Thread::GetName()))).getSS()
+
+#define SYLAR_LOG_DEBUG(logger) SYLAR_LOG_LEVEL(logger, newboy::LogLevel::DEBUG)
+
+#define SYLAR_LOG_INFO(logger) SYLAR_LOG_LEVEL(logger, newboy::LogLevel::INFO)
+
+#define SYLAR_LOG_WARN(logger) SYLAR_LOG_LEVEL(logger, newboy::LogLevel::WARN)
+
+#define SYLAR_LOG_ERROR(logger) SYLAR_LOG_LEVEL(logger, newboy::LogLevel::ERROR)
+
+#define SYLAR_LOG_FATAL(logger) SYLAR_LOG_LEVEL(logger, newboy::LogLevel::FATAL)
+
+#define SYLAR_LOG_FMT_LEVEL(logger, level, fmt, ...) \
+    if(logger->getLevel() <= level) \
+        newboy::LogEventWrap(newboy::LogEvent::ptr(new newboy::LogEvent(    \
+            logger, level, __FILE__, __LINE__, 0, newboy::GetThreadId(),    \
+            newboy::GetFiberId(), time(0), newboy::Thread::GetName()))).getEvent()->format(fmt, __VA_ARGS__)
+ 
+#define SYLAR_LOG_FMT_DEBUG(logger, fmt, ...) SYLAR_LOG_FMT_LEVEL(logger, sylar::LogLevel::DEBUG, fmt, __VA_ARGS__)
+ 
+#define SYLAR_LOG_FMT_INFO(logger, fmt, ...)  SYLAR_LOG_FMT_LEVEL(logger, sylar::LogLevel::INFO, fmt, __VA_ARGS__)
+ 
+#define SYLAR_LOG_FMT_WARN(logger, fmt, ...)  SYLAR_LOG_FMT_LEVEL(logger, sylar::LogLevel::WARN, fmt, __VA_ARGS__)
+ 
+#define SYLAR_LOG_FMT_ERROR(logger, fmt, ...) SYLAR_LOG_FMT_LEVEL(logger, sylar::LogLevel::ERROR, fmt, __VA_ARGS__)
+ 
+#define SYLAR_LOG_FMT_FATAL(logger, fmt, ...) SYLAR_LOG_FMT_LEVEL(logger, sylar::LogLevel::FATAL, fmt, __VA_ARGS__)
+
+
 namespace newboy {
 
 class Logger;

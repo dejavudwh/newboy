@@ -129,6 +129,10 @@ LogEventWrap::~LogEventWrap() {
     m_event->getLogger()->log(m_event->getLevel(), m_event);
 }
 
+std::stringstream& LogEventWrap::getSS() {
+    return m_event->getSS();
+}
+
 /**
  * Appender
  **/
