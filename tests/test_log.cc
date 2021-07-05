@@ -6,7 +6,7 @@ int main(int argc, char const *argv[]) {
     std::cout << "Hello Newboy Logger!" << std::endl;
 
     newboy::Logger::ptr logger(new newboy::Logger);
-    newboy::LogFormatter::ptr fmt(new newboy::LogFormatter("%d%T%p%T%c%T%f%T%l"));
+    newboy::LogFormatter::ptr fmt(new newboy::LogFormatter("%d%T%p%T%c%T%f%T%l%n"));
 
     newboy::StdoutLogAppender::ptr stdout_appender(new newboy::StdoutLogAppender);
     stdout_appender->setFormatter(fmt);
@@ -23,6 +23,13 @@ int main(int argc, char const *argv[]) {
                                                      time(0), std::string("test_log")));
     // event->getSS() << "hello sylar log";
     logger->log(newboy::LogLevel::DEBUG, event);
+
+    std::cout << "\nHello Newboy Logger for macro!" << std::endl;
+
+    NEWBOY_LOG_INFO(logger) << "test macro\n";
+    NEWBOY_LOG_ERROR(logger) << "test macro error\n";
+
+    NEWBOY_LOG_FMT_ERROR(logger, "test macro fmt error %s", "aa");
 
     return 0;
 }

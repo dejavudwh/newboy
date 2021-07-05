@@ -9,7 +9,7 @@
 
 namespace newboy {
 
-    pid_t GetThreadID();
+    pid_t GetThreadId();
     uint32_t GetFiberId();
 }
 

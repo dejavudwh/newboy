@@ -9,6 +9,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR/lib})
 
 set(LIB_SRC
     newboy/log.cc
+    newboy/util.cc
     )
 
 add_library(newboy SHARED ${LIB_SRC})
