@@ -10,6 +10,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR/lib})
 set(LIB_SRC
     newboy/log.cc
     newboy/util.cc
+    newboy/config.cc
     )
 
 add_library(newboy SHARED ${LIB_SRC})
@@ -17,5 +18,10 @@ add_library(newboy SHARED ${LIB_SRC})
 add_executable(test_log tests/test_log.cc)
 add_dependencies(test_log newboy)
 target_link_libraries(test_log
+    newboy)
+
+add_executable(test_config tests/test_config.cc)
+add_dependencies(test_config newboy)
+target_link_libraries(test_config
     newboy)
 

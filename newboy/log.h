@@ -48,6 +48,7 @@
  
 #define NEWBOY_LOG_FMT_FATAL(logger, fmt, ...) NEWBOY_LOG_FMT_LEVEL(logger, newboy::LogLevel::FATAL, fmt, __VA_ARGS__)
 
+#define NEWBOY_LOG_ROOT() newboy::LoggerMgr::GetInstance()->getRoot()
 
 namespace newboy {
 
