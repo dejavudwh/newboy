@@ -65,6 +65,44 @@ class ConfigVar : public ConfigVarBase {
         T m_val;
 };
 
+class Config {
+    public:
+        typedef std::map<std::string, ConfigVarBase::ptr> ConfigVarMap;
+
+        template<class T>
+        static typename ConfigVar<T>::ptr Lookup(const std::string& name,
+                                                 const T& default_value,
+                                                 const std::string& description) {
+            auto tmp = Lookup(name);
+            if (tmp) {
+                NEWBOY_LOG_INFO(NEWBOY_LOG_ROOT()) << "Lookup name= " << name << " exists";
+                
+                return tmp;
+            }
+
+            if (name.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ._0123456789")
+                != std::string::npos) {
+                NEWBOY_LOG_ERROR(NEWBOY_LOG_ROOT()) >> "Lookup name invalid " << name;
+                throw std::invalid_argument(name);
+            }           
+
+            typename ConfigVar<T>::ptr v(new ConfigVar<T>(name, default_value, description));
+            m_datas[name] = v;                                  
+        }
+        
+        template<class T>
+        static typename ConfigVar<T>::ptr Lookup(const std::string& name) {
+            auto it = m_datas.find(name);
+            if (it == m_datas.end()) {
+                return nullptr;
+            }                  
+
+            return std::dynamic_pointer_cast<ConfigVar<T> >(it->second);                          
+        }
+    private:
+        static ConfigVarMap m_datas;
+};
+
 }
 
 #endif
