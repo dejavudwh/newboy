@@ -5,7 +5,13 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 # $ENV{CXXFLAGS} 表示C++编译选项
 set(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -rdynamic -O -g -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function")
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR/lib})
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+
+include_directories(.)
+include_directories(${PROJECT_SOURCE_DIR}/include)
+link_directories(${PROJECT_SOURCE_DIR}/lib)
+
+# find_library(yaml_cpp libyaml-cpp ${PROJECT_SOURCE_DIR}/lib)
 
 set(LIB_SRC
     newboy/log.cc
@@ -23,5 +29,7 @@ target_link_libraries(test_log
 add_executable(test_config tests/test_config.cc)
 add_dependencies(test_config newboy)
 target_link_libraries(test_config
-    newboy)
+    newboy
+    yaml-cpp
+    )
 
