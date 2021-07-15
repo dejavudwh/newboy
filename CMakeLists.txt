@@ -24,12 +24,13 @@ add_library(newboy SHARED ${LIB_SRC})
 add_executable(test_log tests/test_log.cc)
 add_dependencies(test_log newboy)
 target_link_libraries(test_log
-    newboy)
-
-add_executable(test_config tests/test_config.cc)
-add_dependencies(test_config newboy)
-target_link_libraries(test_config
     newboy
-    yaml-cpp
-    )
+    yaml-cpp)
+
+# add_executable(test_config tests/test_config.cc)
+# add_dependencies(test_config newboy)
+# target_link_libraries(test_config
+#     newboy
+#     yaml-cpp
+#     )
 
