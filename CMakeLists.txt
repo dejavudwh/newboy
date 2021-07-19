@@ -17,6 +17,7 @@ set(LIB_SRC
     newboy/log.cc
     newboy/util.cc
     newboy/config.cc
+    newboy/env.cc
     )
 
 add_library(newboy SHARED ${LIB_SRC})
